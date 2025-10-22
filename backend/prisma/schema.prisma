@@ -1,0 +1,57 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Modelo de Usuário Anônimo
+// O 'id' será o identificador salvo no localStorage do front-end
+model User {
+  id String @id @default(uuid())
+
+  // Relações: Um usuário pode ter muitos favoritos e muitas listas
+  favorites   Favorite[]
+  sharedLists SharedList[]
+
+  createdAt DateTime @default(now())
+}
+
+// Modelo de Filmes Favoritos
+// Representa a ação de "um usuário favoritou um filme"
+model Favorite {
+  id        Int      @id @default(autoincrement())
+  movieId   Int // O ID do filme vindo do TMDb
+  createdAt DateTime @default(now())
+
+  // Relação com o Usuário
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Garante que um usuário só pode favoritar um filme uma única vez
+  @@unique([userId, movieId])
+}
+
+// Modelo da Lista de Compartilhamento
+// Contém um "snapshot" dos favoritos de um usuário no momento da criação
+model SharedList {
+  id String @id @default(uuid()) // O ID público que será usado no link
+
+  // Lista de IDs dos filmes (ex: [123, 456, 789])
+  // Isso é um "snapshot" dos favoritos no momento do compartilhamento
+  movieIds Int[]
+
+  createdAt DateTime @default(now())
+
+  // Relação com o Usuário que criou a lista
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
