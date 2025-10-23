@@ -12,6 +12,7 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
+  schemas  = ["public"]
 }
 
 // Modelo de Usuário Anônimo
@@ -24,6 +25,7 @@ model User {
   sharedLists SharedList[]
 
   createdAt DateTime @default(now())
+  @@schema("public")
 }
 
 // Modelo de Filmes Favoritos
@@ -39,6 +41,7 @@ model Favorite {
 
   // Garante que um usuário só pode favoritar um filme uma única vez
   @@unique([userId, movieId])
+  @@schema("public")
 }
 
 // Modelo da Lista de Compartilhamento
@@ -55,4 +58,5 @@ model SharedList {
   // Relação com o Usuário que criou a lista
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@schema("public")
 }
