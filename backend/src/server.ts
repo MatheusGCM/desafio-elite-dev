@@ -2,7 +2,8 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { prisma } from "./lib/prisma";
-import tmdbRoutes from "./routes/tmdb.routes";
+import mainRouter from "./routes";
+import { setupSwagger } from "./docs/swagger";
 
 dotenv.config();
 
@@ -11,7 +12,7 @@ const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
-app.use("/api/v1", tmdbRoutes);
+app.use("/api/v1", mainRouter);
 
 app.get("/api/v1/healthcheck", async (req: Request, res: Response) => {
   try {
@@ -29,6 +30,8 @@ app.get("/api/v1/healthcheck", async (req: Request, res: Response) => {
     });
   }
 });
+
+setupSwagger(app);
 
 app.listen(PORT, () => {
   console.log(`🚀 Servidor rodando na porta http://localhost:${PORT}`);
