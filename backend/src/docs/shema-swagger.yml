@@ -1,0 +1,164 @@
+openapi: 3.0.0
+info:
+  title: API de Usuário
+  version: 1.0.0
+  description: Rotas de registro de usuário e favoritos
+
+paths:
+  /api/v1/users/register:
+    post:
+      tags: ["Usuário"]
+      summary: Registrar um novo usuário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Teste da silva
+      responses:
+        "201":
+          description: Usuário criado com sucesso
+        "400":
+          description: Dados inválidos
+
+  /api/v1/users/favorites:
+    post:
+      tags: ["Usuário"]
+      summary: Adicionar um filme aos favoritos do usuário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  example: b6616dc4-0994-4731-863e-9d8f6ab4c742
+                movieId:
+                  type: integer
+                  example: 550
+      responses:
+        "201":
+          description: Filme adicionado aos favoritos
+        "404":
+          description: Usuário não encontrado
+
+    get:
+      tags: ["Usuário"]
+      summary: Listar filmes favoritos do usuário
+      parameters:
+        - in: query
+          name: userId
+          schema:
+            type: string
+          required: true
+          description: ID do usuário
+      responses:
+        "200":
+          description: Lista de filmes favoritos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    movieId:
+                      type: integer
+                    title:
+                      type: string
+        "404":
+          description: Usuário não encontrado
+
+  /api/v1/users/favorites/{movieId}:
+    delete:
+      tags: ["Usuário"]
+      summary: Remover um filme dos favoritos
+      parameters:
+        - in: path
+          name: movieId
+          schema:
+            type: integer
+          required: true
+          description: ID do filme
+        - in: query
+          name: userId
+          schema:
+            type: string
+          required: true
+          description: ID do usuário
+      responses:
+        "200":
+          description: Filme removido dos favoritos com sucesso.
+        "404":
+          description: Favorito não encontrado.
+  /api/v1/tmdb/search:
+    get:
+      tags: ["Tmdb"]
+      summary: Buscar filmes por palavra-chave
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+          required: true
+          description: Palavra-chave para buscar filmes
+      responses:
+        "200":
+          description: Lista de filmes encontrados
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+        "400":
+          description: O parâmetro "q" é obrigatório.
+  /api/v1/tmdb/movies/popular:
+    get:
+      tags: ["Tmdb"]
+      summary: Retorna filmes populares
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+      responses:
+        "200":
+          description: Lista de filmes populares
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+        "500":
+          description: Falha ao buscar filmes populares no TMDb.
+
+  /api/v1/tmdb/movies/{id}:
+    get:
+      tags: ["Tmdb"]
+      summary: Retorna detalhes de um filme
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        "200":
+          description: Detalhes do filme
+          content:
+            application/json:
+              schema:
+                type: object
+        "500":
+          description: Falha ao buscar detalhes do filmes.
