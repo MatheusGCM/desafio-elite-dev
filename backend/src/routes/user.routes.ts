@@ -3,14 +3,16 @@ import { registerUserController } from "../controller/user/register-user-control
 import {
   addFavoriteController,
   deleteFavoriteController,
-  getFavoriteController,
+  getFavoritesController,
+  getFavoritesIdsController,
 } from "../controller/favorite";
 
 const userRouter = Router();
 
 userRouter.post("/register", registerUserController);
 userRouter.post("/favorites", addFavoriteController);
-userRouter.get("/favorites", getFavoriteController);
+userRouter.get("/favorites", getFavoritesController);
+userRouter.get("/favorites/ids", getFavoritesIdsController);
 userRouter.delete("/favorites/:movieId", deleteFavoriteController);
 
 export default userRouter;

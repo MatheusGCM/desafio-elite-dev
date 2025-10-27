@@ -20,7 +20,7 @@ export async function deleteFavoriteController(req: Request, res: Response) {
     await deleteFavoriteMovie(userId, movieId);
 
     res
-      .status(200)
+      .status(204)
       .json({ message: "Filme removido dos favoritos com sucesso." });
   } catch (error) {
     if (error instanceof Error) {

@@ -1,11 +1,17 @@
 export interface TMDbMovie {
+  backdrop_path: string;
+  genres: [
+    {
+      id: number;
+      name: string;
+    }
+  ];
   id: number;
-  title: string;
   overview: string;
-  poster_path: string | null;
-  backdrop_path: string | null;
+  popularity: number;
+  poster_path: string;
+  title: string;
   vote_average: number;
-  release_date: string;
 }
 
 export interface TMDbSearchResponse {

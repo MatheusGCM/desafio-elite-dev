@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
 import { getFavoritesMovie } from "../../services/userService";
-import { getMovieDetails } from "../../services/tmdbService";
 
-export async function getFavoritesController(req: Request, res: Response) {
+export async function getFavoritesIdsController(req: Request, res: Response) {
   const userId = req.query.userId as string;
 
   if (!userId || typeof userId !== "string") {
@@ -19,10 +18,8 @@ export async function getFavoritesController(req: Request, res: Response) {
     }
 
     const movieIds = favorites.map((fav) => fav.movieId);
-    const movieDetailsPromises = movieIds.map((id) => getMovieDetails(id));
-    const movieDetails = await Promise.all(movieDetailsPromises);
 
-    res.status(200).json(movieDetails);
+    res.status(200).json(movieIds);
   } catch (error) {
     console.error("Erro ao listar favoritos:", error);
     if (error instanceof Error) {

@@ -5,7 +5,7 @@ info:
   description: Rotas de registro de usuário e favoritos
 
 paths:
-  /api/v1/users/register:
+  /api/v1/user/register:
     post:
       tags: ["Usuário"]
       summary: Registrar um novo usuário
@@ -25,7 +25,7 @@ paths:
         "400":
           description: Dados inválidos
 
-  /api/v1/users/favorites:
+  /api/v1/user/favorites:
     post:
       tags: ["Usuário"]
       summary: Adicionar um filme aos favoritos do usuário
@@ -50,7 +50,7 @@ paths:
 
     get:
       tags: ["Usuário"]
-      summary: Listar filmes favoritos do usuário
+      summary: Listar detalhes de filmes favoritos do usuário
       parameters:
         - in: query
           name: userId
@@ -66,16 +66,34 @@ paths:
               schema:
                 type: array
                 items:
-                  type: object
-                  properties:
-                    movieId:
-                      type: integer
-                    title:
-                      type: string
+                  $ref: "#/components/schemas/TMDbMovie"
         "404":
           description: Usuário não encontrado
 
-  /api/v1/users/favorites/{movieId}:
+  /api/v1/user/favorites/ids:
+    get:
+      tags: ["Usuário"]
+      summary: Listar IDs de filmes favoritos do usuário
+      parameters:
+        - in: query
+          name: userId
+          schema:
+            type: string
+          required: true
+          description: ID do usuário
+      responses:
+        "200":
+          description: Lista de IDs de filmes favoritos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: number
+        "404":
+          description: Usuário não encontrado
+
+  /api/v1/user/favorites/{movieId}:
     delete:
       tags: ["Usuário"]
       summary: Remover um filme dos favoritos
@@ -93,8 +111,8 @@ paths:
           required: true
           description: ID do usuário
       responses:
-        "200":
-          description: Filme removido dos favoritos com sucesso.
+        "204":
+          decription: Filme removido dos favoritos com sucesso.
         "404":
           description: Favorito não encontrado.
   /api/v1/tmdb/search:
@@ -162,3 +180,41 @@ paths:
                 type: object
         "500":
           description: Falha ao buscar detalhes do filmes.
+
+components:
+  schemas:
+    TMDbMovie:
+      type: object
+      properties:
+        backdrop_path:
+          type: string
+          example: "/path/to/backdrop.jpg"
+        genres:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 28
+              name:
+                type: string
+                example: "Action"
+        id:
+          type: integer
+          example: 603
+        overview:
+          type: string
+          example: "A computer hacker learns about the true nature of his reality."
+        popularity:
+          type: number
+          example: 89.5
+        poster_path:
+          type: string
+          example: "/path/to/poster.jpg"
+        title:
+          type: string
+          example: "The Matrix"
+        vote_average:
+          type: number
+          example: 8.7
