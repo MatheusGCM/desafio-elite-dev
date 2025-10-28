@@ -1,0 +1,45 @@
+services:
+  frontend:
+    image: node:20-alpine
+    container_name: app_frontend
+    working_dir: /app/frontend
+    command: sh -c "npm install && npm run dev"
+    volumes:
+      - ./:/app
+      - /app/frontend/node_modules
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_BASE_URL=http://localhost:3001/api/v1
+      - VITE_ENVIRONMENT=development
+
+  backend:
+    image: node:20-alpine
+    container_name: app_backend
+    working_dir: /app/backend
+    command: sh -c "npm install && npx prisma generate && npx prisma migrate deploy && npm run dev"
+    volumes:
+      - ./:/app
+      - /app/backend/node_modules
+    ports:
+      - "3001:3001"
+    environment:
+      - DATABASE_URL=postgresql://user:password@db:5432/mydb
+      - TMDB_API_KEY=${TMDB_API_KEY}
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15-alpine
+    container_name: app_database
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=mydb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
