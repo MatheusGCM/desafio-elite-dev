@@ -1,6 +1,6 @@
 # Desafio Elite Dev - Lista de Filmes (TMDB)
 
-Este é um projeto full-stack desenvolvido como parte do Desafio Elite Dev. A aplicação permite que os usuários pesquisem filmes, salvem seus favoritos em uma lista pessoal (persistida anonimamente) e gerem um link público para compartilhar suas listas com outras pessoas.
+Este é um projeto full-stack desenvolvido como parte do Desafio Elite Dev. A aplicação permite que os usuários pesquisem filmes, salvem seus favoritos em uma lista pessoal e gerem um link público para compartilhar suas listas com outras pessoas.
 
 ## 🚀 Links (Deploy)
 
