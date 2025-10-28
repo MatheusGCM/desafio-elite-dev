@@ -1,35 +1,33 @@
-import { Clapperboard } from "lucide-react";
 import { MovieAverage } from "./movie-average";
 
 interface MovieCardProps {
   poster_path: string | null;
   vote_average?: number;
-  onClick(): void;
+  onClick?(): void;
+  disabled?: boolean;
 }
 
 export function MovieCard({
   poster_path,
   vote_average,
   onClick,
+  disabled,
 }: MovieCardProps) {
   return (
     <button
-      className="flex flex-col cursor-pointer gap-2"
+      className={`flex flex-col ${
+        disabled ? "cursor-default" : "cursor-pointer"
+      } gap-2`}
       onClick={onClick}
-      disabled={poster_path === null && vote_average === 0}
+      disabled={(poster_path === null && vote_average === 0) || disabled}
     >
-      {poster_path ? (
-        <img
-          src={`http://image.tmdb.org/t/p/w185${poster_path}`}
-          className="w-full h-auto rounded-xl"
-          alt="poster filme"
-          loading="lazy"
-        />
-      ) : (
-        <div className="flex justify-center items-center w-[185px] h-full border border-zinc-400 rounded-xl">
-          <Clapperboard className="text-zinc-400 size-10" />
-        </div>
-      )}
+      <img
+        src={`http://image.tmdb.org/t/p/w185${poster_path}`}
+        className="md:w-[185px] h-full rounded-xl"
+        alt="poster filme"
+        loading="lazy"
+        width={165}
+      />
 
       {vote_average !== undefined && (
         <MovieAverage vote_average={vote_average} />

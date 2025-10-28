@@ -23,7 +23,6 @@ export function Register() {
     onSuccess: ({ id, name }) => {
       const userData = { id, name };
       saveUser(userData);
-      localStorage.setItem("@user", JSON.stringify(userData));
       navigate("/", { replace: true });
     },
     onError: () => {
@@ -37,12 +36,12 @@ export function Register() {
   }
   return (
     <div className="flex flex-col h-screen w-full items-center justify-center">
-      <div className="space-y-10 rounded-lg bg-zinc-900 p-8 shadow-md">
+      <div className="space-y-10 rounded-lg md:bg-zinc-900 p-8">
         <div className="text-center">
-          <h1 className="text-6xl font-bold uppercase text-red-600">
+          <h1 className="text-5xl md:text-6xl font-bold uppercase text-red-600">
             Filmezando
           </h1>
-          <p className="mt-2 text-sm text-zinc-400">
+          <p className="mt-2 text-xs md:text-sm text-zinc-400">
             Faça seu registro para começar a usar o Filmezando!
           </p>
         </div>

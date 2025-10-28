@@ -9,25 +9,30 @@ import { toast } from "sonner";
 import { useUserStore, type UserProps } from "../store/user-store";
 import { searchMovie } from "../services/search-movie";
 import { useDebounce } from "../hooks/use-debounce";
+import { Pagination } from "../components/pagination";
 
 export function Home() {
   const navigate = useNavigate();
   const { user, saveUser, saveFavoriteIds } = useUserStore();
   const [searchText, setSearchText] = useState("");
   const debouncedSearchTerm = useDebounce(searchText, 2000);
+  const [page, setPage] = useState<number>(1);
+
+  console.log(page);
 
   const { data: dataPopularMovies, isLoading: isLoadingDataPopularMovies } =
     useQuery({
-      queryKey: ["popular-movies"],
-      queryFn: async () => await getPopularMovies(),
+      queryKey: ["popular-movies", page],
+      queryFn: async () => await getPopularMovies(page),
+      placeholderData: (previousData) => previousData,
     });
   const { data: favoriteIds, isLoading: isLoadingFavoriteIds } = useQuery({
     queryKey: ["favorite-ids"],
     queryFn: async () => await getFavoriteMovieIds(user?.id),
   });
   const { data: searchResults, isLoading: isLoadingSearchResults } = useQuery({
-    queryKey: ["search-movies", debouncedSearchTerm],
-    queryFn: async () => await searchMovie(debouncedSearchTerm),
+    queryKey: ["search-movies", debouncedSearchTerm, page],
+    queryFn: async () => await searchMovie(debouncedSearchTerm, page),
     enabled: !!debouncedSearchTerm.trim(),
     placeholderData: (previousData) => previousData,
   });
@@ -73,7 +78,7 @@ export function Home() {
   );
 
   return (
-    <div className="space-y-6 mt-3 md:px-40">
+    <div className="space-y-6 mt-3 mb-5 px-3 md:px-40">
       <div className="flex justify-between items-center">
         <h1
           className="text-3xl font-bold uppercase text-red-600 cursor-pointer"
@@ -98,13 +103,13 @@ export function Home() {
       <p className="mt-2 text-xl">
         Olá, <span className="text-red-400">{user?.name.split(" ")[0]}</span>!
       </p>
-      <div className="flex justify-between">
+      <div className="flex flex-col-reverse md:flex-row justify-between gap-3">
         <p className="mt-2 text-md font-light">Filmes populares este mês</p>
-        <div className="flex items-center gap-2 border border-zinc-600 p-2 rounded-md ">
+        <div className="flex items-center justify-between h-12 gap-2 border border-zinc-600 p-2 rounded-md ">
           <input
             type="text"
             placeholder="Buscar filme..."
-            className="placeholder:text-zinc-400 border-none outline-none"
+            className="placeholder:text-zinc-400 outline-none"
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
           />
@@ -117,15 +122,24 @@ export function Home() {
           <LoaderCircle className="text-white size-10 animate-spin" />
         </div>
       ) : (
-        <div className="grid grid-cols-5 justify-items-center gap-y-6">
-          {dataMoviesFiltered?.map((item) => (
-            <MovieCard
-              key={item.id}
-              onClick={() => handleClickMovie(item.id)}
-              {...item}
+        <>
+          <div className="grid grid-cols-2 md:grid-cols-5 md:justify-items-center gap-y-6">
+            {dataMoviesFiltered?.map((item) => (
+              <MovieCard
+                key={item.id}
+                onClick={() => handleClickMovie(item.id)}
+                {...item}
+              />
+            ))}
+          </div>
+          {dataMovies && dataMovies.results.length === 20 && (
+            <Pagination
+              currentPage={dataMovies.page}
+              totalPages={dataMovies.total_pages}
+              onPageChange={(newPage) => setPage(newPage)}
             />
-          ))}
-        </div>
+          )}
+        </>
       )}
     </div>
   );

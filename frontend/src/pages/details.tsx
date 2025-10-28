@@ -92,25 +92,33 @@ export function Details() {
     );
 
   return (
-    <div className="px-40">
+    <div className="md:px-40">
       <img
         src={`http://image.tmdb.org/t/p/original${movieDetails?.backdrop_path}`}
         alt={movieDetails?.title}
-        className="w-full h-70 object-cover opacity-60"
+        className="w-full h-40 md:h-70 object-cover md:opacity-60"
         loading="lazy"
       />
-      <div className="flex gap-8">
+      <div className="flex gap-8 px-3 md:px-0">
         <img
           src={`http://image.tmdb.org/t/p/w300${movieDetails?.poster_path}`}
           alt={movieDetails?.title}
-          className="relative rounded-xl ml-5 -top-50"
+          className="relative rounded-xl ml-5 -top-50 hidden md:flex"
         />
         <div className="mt-5">
           <div className="flex flex-wrap justify-between items-start gap-5 mb-5">
-            <div className="flex items-center  gap-3">
-              <h1 className="text-3xl font-bold flex-1">
+            <div className="flex flex-col md:flex-row items-center gap-3">
+              <h1 className="text-3xl font-bold flex-1 text-center md:text-start">
                 {movieDetails?.title}
               </h1>
+              <div className="flex gap-5 items-center md:flex-none md:gap-3">
+                <span className="font-light text-xs">
+                  {movieDetails?.runtime} min
+                </span>
+                <span className="font-light text-xs">
+                  ({movieDetails?.release_date.split("-")[0]})
+                </span>
+              </div>
 
               <Tooltip>
                 <TooltipTrigger asChild>
