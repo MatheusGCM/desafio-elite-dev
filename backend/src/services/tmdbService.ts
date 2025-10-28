@@ -1,11 +1,12 @@
 import { TMDbMovie, TMDbSearchResponse } from "../@types/tmdb";
 import { tmdbApi } from "../lib/axios";
 
-export async function searchMovies(query: string) {
+export async function searchMovies(query: string, page?: number) {
   try {
     const { data } = await tmdbApi.get<TMDbSearchResponse>("/search/movie", {
       params: {
         query,
+        page: page ?? 1,
         include_adult: false,
       },
     });
@@ -37,5 +38,17 @@ export async function getPopularMovies(page: number = 1) {
   } catch (error) {
     console.error("Erro ao buscar filmes populares (getPopularMovies):", error);
     throw new Error("Falha ao buscar filmes populares no TMDb.");
+  }
+}
+
+export async function getAllMoviesDetailsById(movieIds: number[]) {
+  try {
+    const movieDetailsPromises = movieIds.map((id) => getMovieDetails(id));
+    const movieDetails = await Promise.all(movieDetailsPromises);
+
+    return movieDetails;
+  } catch (error) {
+    console.error("Erro ao buscar filme (getAllMoviesDetailsById):", error);
+    throw new Error("Falha ao buscar filmes.");
   }
 }

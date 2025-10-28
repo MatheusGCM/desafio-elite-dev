@@ -66,3 +66,24 @@ export async function deleteFavoriteMovie(userId: string, movieId: number) {
     },
   });
 }
+
+export async function createSharedList(userId: string, movieIds: number[]) {
+  const user = await getUserById(userId);
+
+  if (!user) {
+    throw new Error("Usuário não encontrado");
+  }
+
+  return prisma.sharedList.create({
+    data: {
+      userId: userId,
+      movieIds: movieIds,
+    },
+  });
+}
+
+export async function getSharedList(shareId: string) {
+  return await prisma.sharedList.findUnique({
+    where: { id: shareId },
+  });
+}

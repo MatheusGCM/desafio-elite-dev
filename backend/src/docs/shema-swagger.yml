@@ -115,6 +115,55 @@ paths:
           decription: Filme removido dos favoritos com sucesso.
         "404":
           description: Favorito não encontrado.
+
+  /api/v1/user/favorites/share:
+    post:
+      tags: ["Usuário"]
+      summary: Criar lista de compartilhamento
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  example: b6616dc4-0994-4731-863e-9d8f6ab4c742
+      responses:
+        "201":
+          description: Lista de compartilhamento criada com sucesso!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  shareId:
+                    type: string
+        "404":
+          description: Usuário não encontrado
+        "500":
+          description: Erro interno
+
+  api/v1/favorites/share/{shareId}:
+    post:
+      tags: ["Outros"]
+      summary: Buscar filmes da lista de compartilhamento
+      parameters:
+        - in: path
+          name: shareId
+          schema:
+            type: string
+          required: true
+          description: ID da lista de compartilhamento
+      responses:
+        "200":
+          decription: Filmes buscado com sucesso.
+        "400":
+          description: Falha ao buscar filmes.
+
   /api/v1/tmdb/search:
     get:
       tags: ["Tmdb"]
@@ -126,6 +175,11 @@ paths:
             type: string
           required: true
           description: Palavra-chave para buscar filmes
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
       responses:
         "200":
           description: Lista de filmes encontrados

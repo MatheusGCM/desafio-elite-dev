@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import { prisma } from "./lib/prisma";
 import mainRouter from "./routes";
 import { setupSwagger } from "./docs/swagger";
+import { getSharedFavoriteMoviesController } from "./controller/favorite/get-shared-favorite-movies";
 
 dotenv.config();
 
@@ -13,6 +14,8 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 app.use("/api/v1", mainRouter);
+
+app.get("/api/v1/favorites/share/:shareId", getSharedFavoriteMoviesController);
 
 app.get("/api/v1/healthcheck", async (req: Request, res: Response) => {
   try {
